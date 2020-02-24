@@ -22,13 +22,11 @@ sourceurl2 = 'https://www.themoviedb.org/'
 githublink = 'https://github.com/austinlasseter/movie_genres'
 #
 
-file = open('analysis/test_pickle_df.pkl', 'rb')
-test_df_pkl=pickle.load(file)
-file.close()
+
 # open the pickled word vector file
-file = open('analysis/vectorizer.pkl', 'rb')
-vec_pkl=pickle.load(file)
-file.close()
+# file = open('analysis/vectorizer.pkl', 'rb')
+# vec_pkl=pickle.load(file)
+# file.close()
 # #
 # # open the pickled RF model file
 # file = open(f'analysis/trained_rf_model.pkl', 'rb')
