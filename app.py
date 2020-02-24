@@ -37,13 +37,12 @@ file.close()
 top20=pd.read_csv('analysis/top20.csv')
 
 # Define the color palette (19 colors).
-Viridis= ['#440154', '#48186a', '#472d7b', '#424086', '#3b528b', '#33638d', '#2c728e', '#26828e', '#21918c', '#1fa088',
-          '#28ae80', '#3fbc73', '#5ec962', '#84d44b', '#84d44b', '#addc30','#d8e219', '#fde725',  '#fde725']
-
+colors= [  '#536869', '#738C7F', '#8EAA90','#31414E', '#1B2536',  '#360707', '#720f0f', '#9f1111', '#c52525', '#f43d3d']
+horror_colors=[val for val in colors for _ in (0, 1)]
 mydata = [go.Bar(
     x=top20['feature'],
     y=top20['importance'],
-    marker=dict(color=Viridis[::-1])
+    marker=dict(color=horror_colors[::-1])
 )]
 
 mylayout = go.Layout(
@@ -70,23 +69,47 @@ app.layout = html.Div(children=[
     dcc.Store(id='summary-store', storage_type='session'),
     html.Div([
         html.H1(['Horror Movie Predictor']),
-        html.Div('Randomly select a movie summary'),
-        html.Button(id='bam-button', n_clicks=0, children='BAM!'),
-        html.Div(id='movie-title', children=[]),
-        html.Div(id='movie-release', children=[]),
-        html.Div(id='movie-overview', children=[]),
+        html.Div([
+            html.Div([
+                html.Div('Randomly select a movie summary'),
+                html.Button(id='eek-button', n_clicks=0, children='EEK!', style={'color': 'rgb(255, 255, 255)'}),
+                html.Div(id='movie-title', children=[]),
+                html.Div(id='movie-release', children=[]),
+                html.Div(id='movie-overview', children=[]),
+
+            ], style={ 'padding': '12px',
+                    'font-size': '22px',
+                    # 'height': '400px',
+                    'border': 'thick red solid',
+                    'color': 'rgb(255, 255, 255)',
+                    'backgroundColor': '#536869',
+                    'textAlign': 'left',
+                    },
+            className='six columns'),
+            html.Div([
+                html.Div('Enter the movie summary below (try adding a few words to change it up!)'),
+                dcc.Input(
+                    id='summary-input',
+                    type='text',
+                    size='60',
+                    placeholder='Type or paste your movie summary here',
+                ),
+                html.Button(id='boo-button', n_clicks=0, children='BOO!', style={'color': 'rgb(255, 255, 255)'}),
+                html.Div(id='summary-output', children='Press the button!'),
+            ], style={ 'padding': '12px',
+                    'font-size': '22px',
+                    # 'height': '120px',
+                    'border': 'thick red solid',
+                    'color': 'rgb(255, 255, 255)',
+                    'backgroundColor': '#536869',
+                    'textAlign': 'left',
+                    },
+            className='six columns'),
+        ], className='twelve columns'),
         html.Br(),
-        html.Div('Enter the movie summary below (try adding a few words to change it up!)'),
-        dcc.Input(
-            id='summary-input',
-            type='text',
-            size='100',
-            placeholder='Type or paste your movie summary here',
-        ),
-        html.Button(id='biff-button', n_clicks=0, children='POW!'),
-        html.Div(id='summary-output', children='Press the button!'),
-        html.Br(),
-        html.H4(id='prediction-div'),
+
+        html.H2(id='prediction-div', style={'textAlign': 'right'}),
+
         dcc.Graph(id='top20', figure=fig),
         html.Br(),
         html.Div([
@@ -133,7 +156,7 @@ app.layout = html.Div(children=[
 
 # TMDB API call
 @app.callback(Output('tmdb-store', 'data'),
-              [Input('bam-button', 'n_clicks')],
+              [Input('eek-button', 'n_clicks')],
               [State('tmdb-store', 'data')])
 def on_click(n_clicks, data):
     if n_clicks is None:
@@ -159,7 +182,7 @@ def on_data(ts, data):
 # User writes their own summary
 
 @app.callback(Output('summary-store', 'data'),
-              [Input('biff-button', 'n_clicks')],
+              [Input('boo-button', 'n_clicks')],
               [State('summary-input', 'value')]
               )
 def on_click(n_clicks, value):
