@@ -63,7 +63,7 @@ app.layout = html.Div(children=['test',
         html.Div(id='summary-output', children='Press the button!'),
         html.Div(id='vectorized', children=str(vector_test)),
         html.Div(id='probability', children=f'Probability of being a comedy: {str(probs_test1[0])}'),
-
+        html.Div(id='prediction-div'),
     ], className='twelve columns'),
 
 
@@ -140,7 +140,6 @@ def on_click(n_clicks, value):
         data = str(value)
     return data
 
-
 @app.callback(Output('summary-output', 'children'),
               [Input('summary-store', 'modified_timestamp')],
               [State('summary-store', 'data')])
@@ -150,6 +149,17 @@ def on_data(ts, data):
     else:
         return data
 
+
+@app.callback(Output('prediction-div', 'children'),
+              [Input('summary-store', 'modified_timestamp')],
+              [State('summary-store', 'data')])
+def vectorizer_and_predict(ts, data):
+    if ts is None:
+        raise PreventUpdate
+    else:
+        vectorized_text=vectorizer.transform([data])
+        probability=100*rf_model_pickled.predict_proba(vectorized_text)[:,1]
+        return str(f'Probability of being a comedy: {probability[0]}%')
 
 
 ############ Deploy
