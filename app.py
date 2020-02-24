@@ -17,7 +17,7 @@ from helpers.api_call import *
 
 ########### Define a few variables ######
 
-tabtitle = 'Genre Game'
+tabtitle = 'Horror!'
 sourceurl = 'https://www.kaggle.com/jrobischon/wikipedia-movie-plots'
 sourceurl2 = 'https://www.themoviedb.org/'
 githublink = 'https://github.com/austinlasseter/movie_genres'
@@ -47,7 +47,7 @@ mydata = [go.Bar(
 )]
 
 mylayout = go.Layout(
-    title='What makes it a horror film?',
+    title='What makes it a horror movie?',
     xaxis = dict(title = 'Words most associated with being a horror movie'),
     yaxis = dict(title = 'Feature Importance'),
 
@@ -69,8 +69,8 @@ app.layout = html.Div(children=[
     dcc.Store(id='tmdb-store', storage_type='session'),
     dcc.Store(id='summary-store', storage_type='session'),
     html.Div([
-        html.H4(['Genre Game']),
-        html.Div('Press the button to pick a movie'),
+        html.H1(['Horror Movie Predictor']),
+        html.Div('Randomly select a movie summary'),
         html.Button(id='bam-button', n_clicks=0, children='BAM!'),
         html.Div(id='movie-title', children=[]),
         html.Div(id='movie-release', children=[]),
@@ -83,24 +83,33 @@ app.layout = html.Div(children=[
             size='100',
             placeholder='Type or paste your movie summary here',
         ),
-        html.Button(id='biff-button', n_clicks=0, children='BIFF!'),
+        html.Button(id='biff-button', n_clicks=0, children='POW!'),
         html.Div(id='summary-output', children='Press the button!'),
         html.Br(),
-        html.Div(id='prediction-div'),
+        html.H4(id='prediction-div'),
         dcc.Graph(id='top20', figure=fig),
+        html.Br(),
         html.Div([
-            html.Div(id='cm', children=['Confusion Matrix: Random Forest Classifier']),
-            dash_table.DataTable(
-                id='table',
-                columns=[{"name": i, "id": i} for i in cm.columns],
-                data=cm.to_dict('records'),
-                style_header={'backgroundColor': 'rgb(30, 30, 30)'},
-                style_cell={
-                    'backgroundColor': 'rgb(50, 50, 50)',
-                    'color': 'white'
-                }),
+            html.Div([
+                html.Div(id='cm', children=['Confusion Matrix: Random Forest Classifier']),
+                dash_table.DataTable(
+                    id='table',
+                    columns=[{"name": i, "id": i} for i in cm.columns],
+                    data=cm.to_dict('records'),
+                    style_header={'backgroundColor': 'rgb(30, 30, 30)'},
+                    style_cell={
+                        'backgroundColor': 'rgb(50, 50, 50)',
+                        'color': 'white'
+                    }),
+                ], className='six columns'),
+            html.Div([
+                html.Br(),
+                html.Div('Recall: 29%'),
+                html.Div('Precision: 37%'),
+                html.Div('ROC AUC: 74%'),
+                html.Div('Accuracy: 90%'),
             ], className='six columns'),
-        html.Div([' '], className='six columns'),
+        ], className='twelve columns'),
     ], className='twelve columns'),
 
 
