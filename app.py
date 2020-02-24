@@ -8,9 +8,6 @@ import plotly.graph_objs as go
 import pandas as pd
 import random
 import pickle
-import zipfile
-from zipfile import ZipFile
-import os
 import sklearn
 
 from helpers.key_finder import api_key
@@ -25,9 +22,7 @@ sourceurl2 = 'https://www.themoviedb.org/'
 githublink = 'https://github.com/austinlasseter/movie_genres'
 
 
-# open the pickled word vector file
-with ZipFile('vectorizer.zip', 'r') as zipObj:
-   zipObj.extractall()
+
 file = open('vectorizer.pkl', 'rb')
 vec_pkl=pickle.load(file)
 file.close()
@@ -149,7 +144,7 @@ app.layout = html.Div(children=['test',
 #         return data
 
 # remove the pickle files, they are already zipped.
-os.remove('vectorizer.pkl')
+
 
 ############ Deploy
 if __name__ == '__main__':
