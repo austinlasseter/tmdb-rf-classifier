@@ -37,7 +37,7 @@ file.close()
 top20=pd.read_csv('analysis/top20.csv')
 
 # Define the color palette (19 colors).
-colors= [  '#536869', '#738C7F', '#8EAA90','#31414E', '#1B2536',  '#360707', '#720f0f', '#9f1111', '#c52525', '#f43d3d']
+colors= ['#8EAA90', '#738C7F', '#536869',  '#31414E', '#1B2536',  '#360707', '#720f0f', '#9f1111','#c52525', '#f43d3d',   ]
 horror_colors=[val for val in colors for _ in (0, 1)]
 mydata = [go.Bar(
     x=top20['feature'],
@@ -127,10 +127,10 @@ app.layout = html.Div(children=[
                 ], className='six columns'),
             html.Div([
                 html.Br(),
-                html.Div('Recall: 29%'),
-                html.Div('Precision: 37%'),
-                html.Div('ROC AUC: 74%'),
-                html.Div('Accuracy: 90%'),
+                html.Div('Recall: 37%'),
+                html.Div('Precision: 44%'),
+                html.Div('ROC AUC: 72%'),
+                html.Div('Accuracy: 74%'),
             ], className='six columns'),
         ], className='twelve columns'),
     ], className='twelve columns'),
