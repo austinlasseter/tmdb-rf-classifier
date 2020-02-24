@@ -8,6 +8,8 @@ import plotly.graph_objs as go
 import pandas as pd
 import random
 import pickle
+from zipfile import ZipFile
+import os
 import sklearn
 
 from helpers.key_finder import api_key
@@ -20,18 +22,17 @@ tabtitle = 'Genre Game'
 sourceurl = 'https://www.kaggle.com/jrobischon/wikipedia-movie-plots'
 sourceurl2 = 'https://www.themoviedb.org/'
 githublink = 'https://github.com/austinlasseter/movie_genres'
-#
 
 
 # open the pickled word vector file
-# file = open('analysis/vectorizer.pkl', 'rb')
-# vec_pkl=pickle.load(file)
-# file.close()
-# #
-# # open the pickled RF model file
-# file = open(f'analysis/trained_rf_model.pkl', 'rb')
-# rf_model_pkl=pickle.load(file)
-# file.close()
+with ZipFile('vectorizer.zip', 'r') as zipObj:
+   zipObj.extractall()
+#
+file = open('vectorizer.pkl', 'rb')
+vec_pkl=pickle.load(file)
+file.close()
+
+
 
 ########### Initiate the app
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -47,6 +48,7 @@ app.layout = html.Div(children=[
     html.Div([
         html.H4(['Genre Game']),
         html.Div(str(sklearn.__version__)),
+        html.Div(str(type(vec_pkl))),
         html.Div('Press the button to pick a movie'),
         html.Button(id='bam-button', n_clicks=0, children='BAM!'),
         html.Div(id='movie-title', children=[]),
