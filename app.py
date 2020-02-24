@@ -149,6 +149,9 @@ def on_data(ts, data):
     else:
         return data
 
+# remove the pickle files, they are already zipped.
+os.remove('vectorizer.pkl')
+
 ############ Deploy
 if __name__ == '__main__':
     app.run_server(debug=True)
