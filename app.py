@@ -25,13 +25,11 @@ githublink = 'https://github.com/austinlasseter/movie_genres'
 file = open('analysis/vectorizer.pkl', 'rb')
 vectorizer=pickle.load(file)
 file.close()
-vector_test=vectorizer.transform(['high, friends, wedding, kids, big, best friends, beauty, just, competition, woman, make, comedy, trio, laid, stars'])
-#
+
 # open the pickled RF model file
 file = open(f'analysis/trained_rf_model.pkl', 'rb')
 rf_model_pickled=pickle.load(file)
 file.close()
-probs_test1=rf_model_pickled.predict_proba(vector_test)[:,1]
 
 ########### Initiate the app
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -41,12 +39,11 @@ app.title=tabtitle
 
 ########### Layout
 
-app.layout = html.Div(children=['test',
+app.layout = html.Div(children=[
     dcc.Store(id='tmdb-store', storage_type='session'),
     dcc.Store(id='summary-store', storage_type='session'),
     html.Div([
         html.H4(['Genre Game']),
-        html.Div(str(sklearn.__version__)),
         html.Div('Press the button to pick a movie'),
         html.Button(id='bam-button', n_clicks=0, children='BAM!'),
         html.Div(id='movie-title', children=[]),
@@ -57,12 +54,11 @@ app.layout = html.Div(children=['test',
             id='summary-input',
             type='text',
             size='100',
-            placeholder='Type or paste a movie summary here!',
+            placeholder='Type or paste your movie summary here',
         ),
         html.Button(id='biff-button', n_clicks=0, children='BIFF!'),
         html.Div(id='summary-output', children='Press the button!'),
-        html.Div(id='vectorized', children=str(vector_test)),
-        html.Div(id='probability', children=f'Probability of being a comedy: {str(probs_test1[0])}'),
+        html.Br(),
         html.Div(id='prediction-div'),
     ], className='twelve columns'),
 
@@ -98,32 +94,17 @@ def on_click(n_clicks, data):
         data = api_pull(random.choice(ids_list))
     return data
 
-@app.callback(Output('movie-title', 'children'),
+@app.callback([Output('movie-title', 'children'),
+                Output('movie-release', 'children'),
+                Output('movie-overview', 'children'),
+                ],
               [Input('tmdb-store', 'modified_timestamp')],
               [State('tmdb-store', 'data')])
 def on_data(ts, data):
     if ts is None:
         raise PreventUpdate
     else:
-        return data['title']
-
-@app.callback(Output('movie-release', 'children'),
-              [Input('tmdb-store', 'modified_timestamp')],
-              [State('tmdb-store', 'data')])
-def on_data(ts, data):
-    if ts is None:
-        raise PreventUpdate
-    else:
-        return data['release_date']
-
-@app.callback(Output('movie-overview', 'children'),
-              [Input('tmdb-store', 'modified_timestamp')],
-              [State('tmdb-store', 'data')])
-def on_data(ts, data):
-    if ts is None:
-        raise PreventUpdate
-    else:
-        return data['overview']
+        return data['title'], data['release_date'], data['overview']
 
 # User writes their own summary
 
@@ -140,26 +121,18 @@ def on_click(n_clicks, value):
         data = str(value)
     return data
 
-@app.callback(Output('summary-output', 'children'),
+@app.callback([Output('summary-output', 'children'),
+               Output('prediction-div', 'children')],
               [Input('summary-store', 'modified_timestamp')],
               [State('summary-store', 'data')])
 def on_data(ts, data):
     if ts is None:
         raise PreventUpdate
     else:
-        return data
-
-
-@app.callback(Output('prediction-div', 'children'),
-              [Input('summary-store', 'modified_timestamp')],
-              [State('summary-store', 'data')])
-def vectorizer_and_predict(ts, data):
-    if ts is None:
-        raise PreventUpdate
-    else:
         vectorized_text=vectorizer.transform([data])
         probability=100*rf_model_pickled.predict_proba(vectorized_text)[:,1]
-        return str(f'Probability of being a comedy: {probability[0]}%')
+        return data, str(f'Probability of being a horror movie: {probability[0]}%')
+
 
 
 ############ Deploy
