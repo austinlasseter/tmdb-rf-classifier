@@ -1,6 +1,7 @@
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
+import dash_table
 from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 
@@ -31,6 +32,31 @@ file = open(f'analysis/trained_rf_model.pkl', 'rb')
 rf_model_pickled=pickle.load(file)
 file.close()
 
+######## Define the figure
+
+top20=pd.read_csv('analysis/top20.csv')
+
+# Define the color palette (19 colors).
+Viridis= ['#440154', '#48186a', '#472d7b', '#424086', '#3b528b', '#33638d', '#2c728e', '#26828e', '#21918c', '#1fa088',
+          '#28ae80', '#3fbc73', '#5ec962', '#84d44b', '#84d44b', '#addc30','#d8e219', '#fde725',  '#fde725']
+
+mydata = [go.Bar(
+    x=top20['feature'],
+    y=top20['importance'],
+    marker=dict(color=Viridis[::-1])
+)]
+
+mylayout = go.Layout(
+    title='What makes it a horror film?',
+    xaxis = dict(title = 'Words most associated with being a horror movie'),
+    yaxis = dict(title = 'Feature Importance'),
+
+)
+fig = go.Figure(data=mydata, layout=mylayout)
+
+## Confusion Matrix
+cm = pd.read_csv('analysis/conf_matrix.csv')
+
 ########### Initiate the app
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
@@ -50,6 +76,7 @@ app.layout = html.Div(children=[
         html.Div(id='movie-release', children=[]),
         html.Div(id='movie-overview', children=[]),
         html.Br(),
+        html.Div('Enter the movie summary below (try adding a few words to change it up!)'),
         dcc.Input(
             id='summary-input',
             type='text',
@@ -60,6 +87,20 @@ app.layout = html.Div(children=[
         html.Div(id='summary-output', children='Press the button!'),
         html.Br(),
         html.Div(id='prediction-div'),
+        dcc.Graph(id='top20', figure=fig),
+        html.Div([
+            html.Div(id='cm', children=['Confusion Matrix: Random Forest Classifier']),
+            dash_table.DataTable(
+                id='table',
+                columns=[{"name": i, "id": i} for i in cm.columns],
+                data=cm.to_dict('records'),
+                style_header={'backgroundColor': 'rgb(30, 30, 30)'},
+                style_cell={
+                    'backgroundColor': 'rgb(50, 50, 50)',
+                    'color': 'white'
+                }),
+            ], className='six columns'),
+        html.Div([' '], className='six columns'),
     ], className='twelve columns'),
 
 
@@ -89,7 +130,7 @@ def on_click(n_clicks, data):
     if n_clicks is None:
         raise PreventUpdate
     elif n_clicks==0:
-        data = {'title':'please make a selection', 'release_date':' ', 'overview':' '}
+        data = {'title':' ', 'release_date':' ', 'overview':' '}
     elif n_clicks>0:
         data = api_pull(random.choice(ids_list))
     return data
@@ -116,7 +157,7 @@ def on_click(n_clicks, value):
     if n_clicks is None:
         raise PreventUpdate
     elif n_clicks==0:
-        data = 'your text will be displayed here after you press the button'
+        data = ' '
     elif n_clicks>0:
         data = str(value)
     return data
