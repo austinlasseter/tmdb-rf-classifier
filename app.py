@@ -21,12 +21,17 @@ sourceurl = 'https://www.kaggle.com/jrobischon/wikipedia-movie-plots'
 sourceurl2 = 'https://www.themoviedb.org/'
 githublink = 'https://github.com/austinlasseter/movie_genres'
 
-
+# pickled vectorizer
 file = open('analysis/vectorizer.pkl', 'rb')
-tvec_pkl=pickle.load(file)
+vectorizer=pickle.load(file)
 file.close()
-
-
+vector_test=vectorizer.transform(['high, friends, wedding, kids, big, best friends, beauty, just, competition, woman, make, comedy, trio, laid, stars'])
+#
+# open the pickled RF model file
+file = open(f'analysis/trained_rf_model.pkl', 'rb')
+rf_model_pickled=pickle.load(file)
+file.close()
+probs_test1=rf_model_pickled.predict_proba(vector_test)[:,1]
 
 ########### Initiate the app
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -56,7 +61,9 @@ app.layout = html.Div(children=['test',
         ),
         html.Button(id='biff-button', n_clicks=0, children='BIFF!'),
         html.Div(id='summary-output', children='Press the button!'),
-        html.Div(id='vectorized', children=str(tvec_pkl.transform(['this is a test this is just a test']))),
+        html.Div(id='vectorized', children=str(vector_test)),
+        html.Div(id='probability', children=f'Probability of being a comedy: {str(probs_test1[0])}'),
+
     ], className='twelve columns'),
 
 
