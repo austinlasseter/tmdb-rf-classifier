@@ -1,6 +1,6 @@
 # TMDB Classifier
 
-Any any movie summary to predict if it's a horror movie or not
+Input any movie summary to predict if it's a horror movie or not
 * NLP using TF-IDF vectorizer  
 * Random Forest classifier trained on a labeled dataset of 600 negative/536 positive cases.
 * Testing data included 779 cases.
