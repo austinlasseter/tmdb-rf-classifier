@@ -37,17 +37,18 @@ file.close()
 top20=pd.read_csv('analysis/top20.csv')
 
 # Define the color palette (19 colors).
-colors= ['#8EAA90', '#738C7F', '#536869',  '#31414E', '#1B2536',  '#360707', '#720f0f', '#9f1111','#c52525', '#f43d3d',   ]
-horror_colors=[val for val in colors for _ in (0, 1)]
+# colors= ['#8EAA90', '#738C7F', '#536869',  '#31414E', '#1B2536',  '#360707', '#720f0f', '#9f1111','#c52525', '#f43d3d',   ]
+# horror_colors=[val for val in colors for _ in (0, 1)]
+horror_colors=['#536869','#536869','#536869','#536869','#536869','#536869','#536869', '#f43d3d','#536869','#536869','#536869','#f43d3d','#536869','#f43d3d','#536869','#536869','#f43d3d','#536869','#f43d3d','#536869']
 mydata = [go.Bar(
     x=top20['feature'],
     y=top20['importance'],
-    marker=dict(color=horror_colors[::-1])
+    marker=dict(color=horror_colors)
 )]
 
 mylayout = go.Layout(
-    title='What makes it a horror movie?',
-    xaxis = dict(title = 'Words most likely to distinguish if it is a horror movie'),
+    title='What words make it a horror movie?',
+    xaxis = dict(title = 'Average % contribution of each word to the overall prediction (red words are more highly associated non-horror predictions)'),
     yaxis = dict(title = 'Feature Importance'),
 
 )
@@ -87,7 +88,7 @@ app.layout = html.Div(children=[
                     },
             className='six columns'),
             html.Div([
-                html.Div('Enter the movie summary below (try adding a few words to change it up!)'),
+                html.Div('Enter your summary here (or try adding words from the chart below)'),
                 dcc.Input(
                     id='summary-input',
                     type='text',
@@ -190,7 +191,7 @@ def on_click(n_clicks, value):
     if n_clicks is None:
         raise PreventUpdate
     elif n_clicks==0:
-        data = ' '
+        data = 'high school zombie night!'
     elif n_clicks>0:
         data = str(value)
     return data
