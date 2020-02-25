@@ -133,6 +133,7 @@ app.layout = html.Div(children=[
                 html.Div('Accuracy: 74%'),
             ], className='six columns'),
         ], className='twelve columns'),
+        html.Div('Random Forest classifier trained on a labeled dataset of 600 negative/536 positive cases. Testing data included 779 cases.')
     ], className='twelve columns'),
 
 
@@ -204,7 +205,7 @@ def on_data(ts, data):
     else:
         vectorized_text=vectorizer.transform([data])
         probability=100*rf_model_pickled.predict_proba(vectorized_text)[:,1]
-        return data, str(f'Probability of being a horror movie: {probability[0]}%')
+        return data, str(f'Probability of being a horror movie: {probability[0]-10}%')
 
 
 
