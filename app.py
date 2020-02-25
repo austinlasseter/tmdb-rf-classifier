@@ -18,9 +18,9 @@ from helpers.api_call import *
 ########### Define a few variables ######
 
 tabtitle = 'Horror!'
-sourceurl = 'https://www.kaggle.com/jrobischon/wikipedia-movie-plots'
-sourceurl2 = 'https://www.themoviedb.org/'
-githublink = 'https://github.com/austinlasseter/movie_genres'
+sourceurl = 'https://www.kaggle.com/tmdb/tmdb-movie-metadata'
+sourceurl2 = 'https://developers.themoviedb.org/3/getting-started/introduction'
+githublink = 'https://github.com/austinlasseter/tmdb-rf-classifier'
 
 # pickled vectorizer
 file = open('analysis/vectorizer.pkl', 'rb')
