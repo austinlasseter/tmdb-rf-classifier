@@ -47,7 +47,7 @@ mydata = [go.Bar(
 
 mylayout = go.Layout(
     title='What makes it a horror movie?',
-    xaxis = dict(title = 'Words most associated with being a horror movie'),
+    xaxis = dict(title = 'Words most likely to distinguish if it is a horror movie'),
     yaxis = dict(title = 'Feature Importance'),
 
 )
@@ -205,7 +205,7 @@ def on_data(ts, data):
     else:
         vectorized_text=vectorizer.transform([data])
         probability=100*rf_model_pickled.predict_proba(vectorized_text)[:,1]
-        return data, str(f'Probability of being a horror movie: {probability[0]-10}%')
+        return data, str(f'Probability of being a horror movie: {probability[0]}%')
 
 
 
